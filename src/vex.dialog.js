@@ -7,14 +7,26 @@ var buildDialogForm = function buildDialogForm (options) {
   var form = document.createElement('form')
   form.classList.add('vex-dialog-form')
 
+  // Add a modal dialog title.
+  var title = document.createElement('h3')
+  title.classList.add('vex-dialog-title')
+  title.appendChild(options.title instanceof window.Node ? options.title : domify(options.title))
+
   var message = document.createElement('div')
   message.classList.add('vex-dialog-message')
+  // Add message classes.
+  if (typeof options.messageClassName === 'string') {
+    options.messageClassName.split(/\s+/).forEach(function (clss) {
+      if (clss) message.classList.add(clss)
+    })
+  }
   message.appendChild(options.message instanceof window.Node ? options.message : domify(options.message))
 
   var input = document.createElement('div')
   input.classList.add('vex-dialog-input')
   input.appendChild(options.input instanceof window.Node ? options.input : domify(options.input))
 
+  form.appendChild(title)
   form.appendChild(message)
   form.appendChild(input)
 
@@ -162,10 +174,7 @@ var plugin = function plugin (vex) {
       // More closely mimics "window.prompt" in that a single string is returned
       var callback = options.callback
       options.callback = function promptCallback (value) {
-        if (typeof value === 'object') {
-          var keys = Object.keys(value)
-          value = keys.length ? value[keys[0]] : ''
-        }
+        // Return value as object
         callback(value)
       }
       return this.open(options)
@@ -197,7 +206,9 @@ var plugin = function plugin (vex) {
   dialog.defaultOptions = {
     callback: function () {},
     afterOpen: function () {},
+    title: '',
     message: '',
+    messageClassName: '',
     input: '',
     yesText: '',
     noText: '',
@@ -209,7 +220,9 @@ var plugin = function plugin (vex) {
     onSubmit: function onDialogSubmit (e) {
       e.preventDefault()
       if (this.options.input) {
-        this.value = serialize(this.form, { hash: true })
+        this.value = serialize(this.form, {
+          hash: true
+        })
       }
       return this.close()
     },
