@@ -1,5 +1,5 @@
 {
-  "name": "vex-dialog",
+  "name": "vex-dialog-enketo",
   "version": "1.1.0",
   "description": "A vex plugin for drop-in alert, confirm, and prompt dialogs",
   "author": "Brendan Batliner <brendan@omnipointment.com>",
