@@ -26,9 +26,14 @@ var buildDialogForm = function buildDialogForm (options) {
   input.classList.add('vex-dialog-input')
   input.appendChild(options.input instanceof window.Node ? options.input : domify(options.input))
 
+  // Add countdown timer
+  var timer = document.createElement('div')
+  timer.classList.add('vex-auto-close-timer')
+
   form.appendChild(title)
   form.appendChild(message)
   form.appendChild(input)
+  form.appendChild(timer)
 
   return form
 }
@@ -126,6 +131,9 @@ var plugin = function plugin (vex) {
       // Add submit listener to form
       form.addEventListener('submit', options.onSubmit.bind(dialogInstance))
 
+      // Add countdown timer behaviour
+      this.addAutoCloseTimer(dialogInstance, options)
+
       // Optionally focus the first input in the form
       if (options.focusFirstInput) {
         var el = dialogInstance.contentEl.querySelector('button, input, select, textarea')
@@ -178,6 +186,22 @@ var plugin = function plugin (vex) {
         callback(value)
       }
       return this.open(options)
+    },
+
+    addAutoCloseTimer: function (instance, options) {
+      if (options.autoClose && typeof options.autoClose === 'number') {
+        var timer = instance.form.querySelector('.vex-auto-close-timer')
+        var timeLeft = options.autoClose
+        timer.textContent = timeLeft--
+        var timerInterval = window.setInterval(function () {
+          if (!timeLeft) {
+            instance.close()
+              // Timer will continue to run if user closes dialog before it runs out but that's okay.
+            clearInterval(timerInterval)
+          }
+          timer.textContent = timeLeft--
+        }, 1000)
+      }
     }
   }
 
