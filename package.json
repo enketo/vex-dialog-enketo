@@ -4,7 +4,7 @@
   "description": "A vex plugin for drop-in alert, confirm, and prompt dialogs",
   "author": "Brendan Batliner <brendan@omnipointment.com>",
   "license": "MIT",
-  "main": "dist/vex.dialog.js",
+  "main": "src/vex.dialog.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/bbatliner/vex-dialog"
